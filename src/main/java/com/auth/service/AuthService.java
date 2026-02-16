@@ -5,15 +5,20 @@ import com.auth.dto.UserDto;
 import com.auth.entity.User;
 import com.auth.repository.UserRepository;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
 
-    @Autowired
+
     private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
+
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public APIResponse<String> register(UserDto dto){
         if (userRepository.existsByUsername(dto.getUsername())){
@@ -32,7 +37,15 @@ public class AuthService {
         }
         User user = new User();
         BeanUtils.copyProperties(dto, user);
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        System.out.println(user.getId());
 
-        return null;
+        userRepository.save(user);
+
+        APIResponse<String> response = new APIResponse<>();
+        response.setMessage("Registration Successfull");
+        response.setStatus(201);
+        response.setData("Transaction Completed");
+        return response;
     }
 }

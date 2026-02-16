@@ -2,7 +2,7 @@ package com.auth.dto;
 
 public class UserDto {
 
-    private long id;
+    private Long id;
 
     private String name;
 
@@ -12,11 +12,11 @@ public class UserDto {
 
     private String password;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -51,5 +51,4 @@ public class UserDto {
     public void setPassword(String password) {
         this.password = password;
     }
-
 }
