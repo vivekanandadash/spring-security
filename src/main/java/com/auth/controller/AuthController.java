@@ -1,11 +1,14 @@
 package com.auth.controller;
 
 import com.auth.dto.APIResponse;
+import com.auth.dto.LoginDto;
 import com.auth.dto.UserDto;
 import com.auth.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,9 +20,11 @@ public class AuthController {
 
 
     private AuthService authService;
+    private AuthenticationManager authManager;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, AuthenticationManager authManager) {
         this.authService = authService;
+        this.authManager = authManager;
     }
 
     @PostMapping("/signup")
@@ -29,5 +34,12 @@ public class AuthController {
         APIResponse<String> response = authService.register(userDto);
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
 
+    }
+    public ResponseEntity<APIResponse<String>> loginCheck(
+            @RequestBody LoginDto loginDto
+            ){
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginDto.getUsername(),loginDto.getPassword());
+        authManager.authenticate(token);
+        return null;
     }
 }
