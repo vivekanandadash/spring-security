@@ -38,7 +38,6 @@ public class AuthService {
         User user = new User();
         BeanUtils.copyProperties(dto, user);
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        System.out.println(user.getId());
 
         userRepository.save(user);
 
