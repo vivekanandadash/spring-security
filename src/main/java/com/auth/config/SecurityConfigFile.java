@@ -1,9 +1,12 @@
 package com.auth.config;
 
+import com.auth.service.CustomerUserDetailsService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -32,7 +35,7 @@ public class SecurityConfigFile {
 
                 // 2️⃣ Authorization rules
                 .authorizeHttpRequests(req -> {
-                    req.requestMatchers("/api/v1/auth/signup").permitAll()
+                    req.requestMatchers("/api/v1/auth/signup","/api/v1/auth/login").permitAll()
                             .anyRequest().authenticated();
                 });
         return http.build();
@@ -44,5 +47,17 @@ public class SecurityConfigFile {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config){
         return config.getAuthenticationManager();
+    }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider(
+            CustomerUserDetailsService customerUserDetailsService,
+            PasswordEncoder passwordEncoder
+
+    ){
+        DaoAuthenticationProvider provider  = new DaoAuthenticationProvider(customerUserDetailsService);
+        provider.setPasswordEncoder(passwordEncoder);
+        return provider;
+
     }
 }

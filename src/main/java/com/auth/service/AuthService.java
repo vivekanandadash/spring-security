@@ -42,7 +42,7 @@ public class AuthService {
         userRepository.save(user);
 
         APIResponse<String> response = new APIResponse<>();
-        response.setMessage("Registration Successfull");
+        response.setMessage("Registration Successful");
         response.setStatus(201);
         response.setData("Transaction Completed");
         return response;
