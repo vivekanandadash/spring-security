@@ -21,15 +21,14 @@ public class AuthService {
     }
 
     public APIResponse<String> register(UserDto dto){
+        APIResponse<String> response = new APIResponse<>();
         if (userRepository.existsByUsername(dto.getUsername())){
-            APIResponse<String> response = new APIResponse<>();
             response.setMessage("Registration Failed");
             response.setStatus(500);
             response.setData("User with username exists");
             return response;
         }
         if(userRepository.existsByEmail(dto.getEmail())) {
-            APIResponse<String> response = new APIResponse<>();
             response.setMessage("Registration Failed");
             response.setStatus(500);
             response.setData("User with Email Id exists");
@@ -41,7 +40,6 @@ public class AuthService {
 
         userRepository.save(user);
 
-        APIResponse<String> response = new APIResponse<>();
         response.setMessage("Registration Successful");
         response.setStatus(201);
         response.setData("Transaction Completed");
