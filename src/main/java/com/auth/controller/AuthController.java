@@ -29,11 +29,18 @@ public class AuthController {
         this.authManager = authManager;
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<APIResponse<String>> createUser(
+    @PostMapping("/patient_signup")
+    public ResponseEntity<APIResponse<String>> newPatient(
             @RequestBody UserDto userDto
     ) {
-        APIResponse<String> response = authService.register(userDto);
+        APIResponse<String> response = authService.register(userDto,"ROLE_PATIENT");
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
+
+    } @PostMapping("/doctor_signup")
+    public ResponseEntity<APIResponse<String>> newDoctor(
+            @RequestBody UserDto userDto
+    ) {
+        APIResponse<String> response = authService.register(userDto,"ROLE_DOCTOR");
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
 
     }

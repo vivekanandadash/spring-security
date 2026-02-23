@@ -20,7 +20,7 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public APIResponse<String> register(UserDto dto){
+    public APIResponse<String> register(UserDto dto, String role){
         APIResponse<String> response = new APIResponse<>();
         if (userRepository.existsByUsername(dto.getUsername())){
             response.setMessage("Registration Failed");
@@ -35,6 +35,7 @@ public class AuthService {
             return response;
         }
         User user = new User();
+        user.setRole(role);
         BeanUtils.copyProperties(dto, user);
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
 

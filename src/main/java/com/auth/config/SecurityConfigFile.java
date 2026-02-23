@@ -35,7 +35,7 @@ public class SecurityConfigFile {
 
                 // 2️⃣ Authorization rules
                 .authorizeHttpRequests(req -> {
-                    req.requestMatchers("/api/v1/auth/signup","/api/v1/auth/login").permitAll()
+                    req.requestMatchers("/api/v1/auth/patient_signup","/api/v1/auth/doctor_signup","/api/v1/auth/login").permitAll()
                             .anyRequest().authenticated();
                 });
         return http.build();
