@@ -6,13 +6,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/welcome")
 public class WelcomeController {
-    @GetMapping("/hello")
+    @GetMapping("/patient")
     public String hello() {
-        return "hello";
+        return "hello patient";
     }
 
-    @GetMapping("/hi")
+    @GetMapping("/doctor")
     public String hi() {
-        return "hi";
+        return "hi Doctor";
     }
 }
