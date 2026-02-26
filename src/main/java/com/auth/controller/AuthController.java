@@ -4,6 +4,7 @@ import com.auth.dto.APIResponse;
 import com.auth.dto.LoginDto;
 import com.auth.dto.UserDto;
 import com.auth.service.AuthService;
+import com.auth.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,24 +24,28 @@ public class AuthController {
 
     private AuthService authService;
     private AuthenticationManager authManager;
+    private JwtService jwtService;
 
-    public AuthController(AuthService authService, AuthenticationManager authManager) {
+    public AuthController(AuthService authService, AuthenticationManager authManager,JwtService jwtService) {
         this.authService = authService;
         this.authManager = authManager;
+        this.jwtService = jwtService;
     }
 
     @PostMapping("/patient_signup")
     public ResponseEntity<APIResponse<String>> newPatient(
             @RequestBody UserDto userDto
     ) {
-        APIResponse<String> response = authService.register(userDto,"ROLE_PATIENT");
+        APIResponse<String> response = authService.register(userDto, "ROLE_PATIENT");
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
 
-    } @PostMapping("/doctor_signup")
+    }
+
+    @PostMapping("/doctor_signup")
     public ResponseEntity<APIResponse<String>> newDoctor(
             @RequestBody UserDto userDto
     ) {
-        APIResponse<String> response = authService.register(userDto,"ROLE_DOCTOR");
+        APIResponse<String> response = authService.register(userDto, "ROLE_DOCTOR");
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
 
     }
@@ -55,9 +60,10 @@ public class AuthController {
         try {
             Authentication authenticate = authManager.authenticate(token);
             System.out.println(authenticate.isAuthenticated());
+            String jwtToken = jwtService.generateToken(loginDto.getUsername(), authenticate.getAuthorities().iterator().next().getAuthority());
             response.setMessage("Login Successfully");
             response.setStatus(200);
-            response.setData("Transaction Completed");
+            response.setData(jwtToken);
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (BadCredentialsException e) {
             System.out.println("login failed :" + e.getMessage());
