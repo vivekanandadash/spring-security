@@ -1,5 +1,7 @@
 package com.auth.filter;
 
+import com.auth.service.CustomerUserDetailsService;
+import com.auth.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,11 +13,27 @@ import java.io.IOException;
 
 @Component
 public class JWTFilter extends OncePerRequestFilter {
+    private JwtService jwtService;
+    private CustomerUserDetailsService customerUserDetailsService;
+
+
+    public JWTFilter(JwtService jwtService, CustomerUserDetailsService customerUserDetailsService) {
+        this.jwtService = jwtService;
+        this.customerUserDetailsService = customerUserDetailsService;
+    }
+
+
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = request.getHeader("Authorization");
      if(token!=null && token.startsWith("Bearer ")){
          String authToken = token.substring(7);
+         String username = jwtService.validateTokenAndRetriveSubject(authToken);
+         if (username!=null){
+            var userdetails =  customerUserDetailsService.loadUserByUsername(username) ;
+         }
+
      }
 
     }
